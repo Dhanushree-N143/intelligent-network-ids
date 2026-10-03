@@ -44,7 +44,7 @@ st.set_page_config(
     page_title="GWO-Based Network IDS",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 CSS = f"""
@@ -61,10 +61,21 @@ html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 
     height: 2.75rem;
     background: transparent;
   }}
+
   header[data-testid="stHeader"] button[data-testid="stSidebarCollapseButton"] {{
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+  }}
+
+  section[data-testid="stSidebar"] {{
+    display: none;
+  }}
+}}
+
+@media (min-width: 769px) {{
+  section[data-testid="stSidebar"] {{
+    display: block;
   }}
 }}
 
