@@ -56,6 +56,7 @@ html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 
 #MainMenu, footer, header[data-testid="stHeader"] {{ visibility: hidden; height: 0; }}
 
 @media (max-width: 768px) {{
+  /* Keep Streamlit's native sidebar control available on phones. */
   header[data-testid="stHeader"] {{
     visibility: visible;
     height: 2.75rem;
@@ -68,12 +69,8 @@ html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 
     opacity: 1 !important;
   }}
 
-  section[data-testid="stSidebar"] {{
-    display: none;
-  }}
-}}
-
-@media (min-width: 769px) {{
+  /* Let Streamlit control the sidebar's open/closed state.
+     Do NOT use display:none here: that removes the mobile navigation control. */
   section[data-testid="stSidebar"] {{
     display: block;
   }}
