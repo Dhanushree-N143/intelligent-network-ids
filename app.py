@@ -53,24 +53,41 @@ CSS = f"""
 html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif !important; color: {INK}; }}
 .stApp {{ background: linear-gradient(180deg, #eef3fa 0%, #f7f9fc 320px, #f7f9fc 100%); }}
 .block-container {{ padding-top: 1.2rem; padding-bottom: 3rem; max-width: 1280px; }}
-#MainMenu, footer, header[data-testid="stHeader"] {{ visibility: hidden; height: 0; }}
+/* Keep Streamlit's native header/sidebar toggle available.
+   Hiding stHeader makes the navigation impossible to reopen after
+   the sidebar is collapsed. */
+#MainMenu, footer {{
+    visibility: hidden !important;
+    height: 0 !important;
+}}
+
+header[data-testid="stHeader"] {{
+    visibility: visible !important;
+    height: 2.75rem !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
+}}
+
+header[data-testid="stHeader"] button[data-testid="stSidebarCollapseButton"] {{
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}}
 
 @media (max-width: 768px) {{
-  /* Keep Streamlit's native sidebar control available on phones. */
   header[data-testid="stHeader"] {{
-    visibility: visible;
-    height: 2.75rem;
-    background: transparent;
+    height: 2.75rem !important;
   }}
 
   header[data-testid="stHeader"] button[data-testid="stSidebarCollapseButton"] {{
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
   }}
 
-  /* Let Streamlit control the sidebar's open/closed state.
-     Do NOT use display:none here: that removes the mobile navigation control. */
   section[data-testid="stSidebar"] {{
     display: block;
   }}
