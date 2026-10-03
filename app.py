@@ -72,10 +72,6 @@ html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 
 .hero .pill {{ font-size: .78rem; font-weight: 600; color: #fff; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.26);
   padding: 5px 13px; border-radius: 20px; backdrop-filter: blur(4px); }}
 .hero .pill.accent {{ background: #7ee2d6; color: #0b3b45; border-color: #7ee2d6; }}
-.hero-badge { width: 100%; box-sizing: border-box; text-align: center; font-size: .76rem; font-weight: 650;
-  color: #33465a; background: #fff; border: 1px solid #d9e2ec; padding: 8px 10px;
-  border-radius: 999px; box-shadow: 0 3px 10px rgba(31,78,121,.06); margin: 0 0 12px 0; }
-.hero-badge.accent { background: #dff5f2; color: #0b6e70; border-color: #a8ddd6; }
 
 /* ---------- headings ---------- */
 .page-title {{ font-size: 1.7rem; font-weight: 800; color: {NAVY}; margin: 0; letter-spacing: -.3px; }}
@@ -128,13 +124,6 @@ html, body, [class*="css"], .stMarkdown, button, input {{ font-family: 'Inter', 
 .kv td:first-child {{ color: {MUTED}; width: 230px; font-weight: 600; }}
 .footer {{ margin-top: 40px; padding-top: 14px; border-top: 1px solid {LINE}; text-align: center; color: {MUTED}; font-size: .78rem; }}
 
-/* ---------- responsive top navigation ---------- */
-.top-nav {{ background: rgba(255,255,255,.96); border: 1px solid {LINE}; border-radius: 14px; padding: 10px 12px;
-  margin: 0 0 18px 0; box-shadow: 0 4px 16px rgba(31,78,121,.07); position: sticky; top: 8px; z-index: 50; backdrop-filter: blur(10px); }}
-.top-nav-label {{ font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: {MUTED}; font-weight: 800; margin: 0 0 4px 2px; }}
-.top-nav-help {{ font-size: .72rem; color: {MUTED}; margin: 5px 2px 0 2px; }}
-.mobile-nav-marker {{ display: none; }}
-
 /* ---------- sidebar ---------- */
 section[data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid {LINE}; box-shadow: 4px 0 22px rgba(31,78,121,.05); }}
 .side-brand {{ display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }}
@@ -159,36 +148,6 @@ div[data-testid="stButton"] button[kind="primary"]:hover {{ color: #fff; box-sha
 div[data-testid="stExpander"] {{ background: #fff; border: 1px solid {LINE}; border-radius: 12px; box-shadow: 0 2px 8px rgba(31,78,121,.05); }}
 div[data-testid="stPlotlyChart"] {{ background: #fff; border: 1px solid {LINE}; border-radius: 14px; padding: 8px 10px; box-shadow: 0 2px 6px rgba(31,78,121,.05), 0 8px 22px rgba(31,78,121,.05); }}
 div[data-testid="stDataFrame"] {{ border: 1px solid {LINE}; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(31,78,121,.05); }}
-
-/* ---------- phone / narrow-screen layout ---------- */
-@media (max-width: 768px) {{
-  .block-container {{ padding: .65rem .72rem 2.5rem .72rem; max-width: 100%; }}
-  .top-nav {{ margin-bottom: 12px; padding: 9px 10px; border-radius: 12px; position: sticky; top: 4px; }}
-  .top-nav-help {{ display: none; }}
-  .hero {{ border-radius: 16px; padding: 20px 18px 18px 18px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(18,54,92,.20); }}
-  .hero .row {{ gap: 13px; align-items: center; }}
-  .hero .logo {{ width: 48px; height: 48px; border-radius: 14px; font-size: 1.45rem; }}
-  .hero h1 {{ font-size: 1.38rem; line-height: 1.12; letter-spacing: -.25px; }}
-  .hero .subtitle {{ font-size: .82rem; line-height: 1.45; margin-top: 5px; }}
-  .hero .pills {{ margin-top: 12px; gap: 6px; }}
-  .hero .pill {{ font-size: .68rem; padding: 5px 9px; }}
-  .hero-badge { font-size: .68rem; padding: 7px 8px; margin-bottom: 7px; }
-  .page-title {{ font-size: 1.38rem; }}
-  .page-sub {{ font-size: .86rem; line-height: 1.4; margin-bottom: 14px; }}
-  .sec {{ font-size: 1rem; margin: 22px 0 10px 0; }}
-  .sec:before {{ height: 18px; }}
-  .card {{ padding: 13px 14px 12px 14px; border-radius: 12px; }}
-  .card .val {{ font-size: 1.55rem; }}
-  .card .lbl {{ font-size: .63rem; }}
-  .card .sub {{ font-size: .7rem; }}
-  .flow .step {{ flex-basis: 100%; min-width: 0; margin-bottom: 7px; padding: 12px 10px; }}
-  .flow .arrow {{ transform: rotate(90deg); padding: 1px 0; height: 18px; align-self: center; }}
-  div[data-testid="stPlotlyChart"] {{ padding: 4px 2px; border-radius: 11px; }}
-  div[data-testid="stDataFrame"] {{ font-size: .78rem; }}
-  .kv td:first-child {{ width: 42%; }}
-  .footer {{ font-size: .68rem; line-height: 1.4; margin-top: 28px; }}
-  section[data-testid="stSidebar"] {{ display: none !important; }}
-}}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -231,30 +190,13 @@ def load_json(path: Path):
 
 
 @st.cache_data(show_spinner=False)
-def _count_arff_records(path_str, mtime):
-    """Count actual records stored in an ARFF file without loading the full dataset."""
-    count = 0
-    in_data = False
-    with open(path_str, "r", encoding="utf-8", errors="replace") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line or line.startswith("%"):
-                continue
-            if not in_data:
-                if line.lower() == "@data":
-                    in_data = True
-                continue
-            count += 1
-    return count
+def _count_unique_rows(path_str, mtime):
+    # Same de-duplication as gwo_ids.prepare(); used only when no run metadata is available.
+    return int(len(gwo_ids.load_arff(path_str).drop_duplicates()))
 
 
 def count_rows(path: Path):
-    if not path.exists():
-        return None
-    try:
-        return _count_arff_records(str(path), path.stat().st_mtime)
-    except Exception:
-        return None
+    return _count_unique_rows(str(path), path.stat().st_mtime) if path.exists() else None
 
 
 def pct(x, d=2):
@@ -351,7 +293,7 @@ REFS = EXPERIMENTS / "reference_runs.csv"
 
 FILE_STATUS = [GWO_RES, BASE_RES, GWO_FEAT, GWO_CONV, GWO_PRED, GWO_IMP, SEEDS, ITERS]
 
-# ----------------------------------------------------------------------------- responsive navigation
+# ----------------------------------------------------------------------------- sidebar
 PAGES = [
     "1 · System Overview",
     "2 · Feature Selection",
@@ -362,26 +304,11 @@ PAGES = [
     "7 · Run IDS",
 ]
 
-# A visible top navigation is used instead of relying on the collapsed mobile sidebar.
-# It remains available on desktop as well, so the same navigation works consistently
-# on laptops, tablets and phones.
-with st.container():
-    st.markdown('<div class="top-nav"><div class="top-nav-label">Dashboard navigation</div>', unsafe_allow_html=True)
-    page = st.selectbox(
-        "Navigate",
-        PAGES,
-        index=0,
-        label_visibility="collapsed",
-        key="top_navigation",
-    )
-    st.markdown('<div class="top-nav-help">Use this menu to move between the review sections.</div></div>', unsafe_allow_html=True)
-
-# Keep the sidebar for desktop users who want a quick data-file/status panel.
-# Navigation itself is intentionally not placed here because Streamlit collapses the
-# sidebar on phones.
 with st.sidebar:
     st.markdown('<div class="side-brand"><div class="lg">🛡️</div><div><div class="t1">GWO-Based<br>Network IDS</div>'
                 '<div class="t2">Demo of an existing implementation</div></div></div>', unsafe_allow_html=True)
+    page = st.radio("Navigate", PAGES, label_visibility="collapsed")
+    st.markdown("---")
     st.markdown(f"<div style='font-size:.78rem;font-weight:700;color:{MUTED};letter-spacing:.8px;'>DATA FILES</div>",
                 unsafe_allow_html=True)
     dot_on = f'<span style="color:{TEAL}">●</span>'
@@ -393,30 +320,16 @@ with st.sidebar:
     st.markdown(f"<div style='font-size:.72rem;color:{MUTED};margin-top:6px;'>● found &nbsp; ○ not generated yet</div>",
                 unsafe_allow_html=True)
     st.markdown("---")
-    st.caption("Navigation is available at the top of the dashboard. Existing system: NSL-KDD → Binary GWO → Random Forest.")
+    st.caption("Existing system: NSL-KDD → Binary GWO → Random Forest. Not the proposed/novel IDS.")
 
 # ----------------------------------------------------------------------------- banner
 st.markdown(
     '<div class="hero"><div class="row"><div class="logo">🛡️</div><div>'
     '<h1>GWO-Based Network Intrusion Detection System</h1>'
-    '<p class="subtitle">NSL-KDD &nbsp;|&nbsp; Binary Grey Wolf Optimization &nbsp;|&nbsp; Random Forest</p>'
-    '</div></div></div>',
-    unsafe_allow_html=True,
-)
-
-# Native Streamlit elements are used for the badges so they render reliably on mobile browsers.
-badge_cols = st.columns(4)
-badges = [
-    ("Existing implementation demo", True),
-    ("41 input features", False),
-    ("Wrapper-based feature selection", False),
-    ("Binary classification: Normal / Attack", False),
-]
-for col, (text, accent) in zip(badge_cols, badges):
-    col.markdown(
-        f'<div class="hero-badge {"accent" if accent else ""}">{text}</div>',
-        unsafe_allow_html=True,
-    )
+    '<p class="subtitle">NSL-KDD &nbsp;|&nbsp; Binary Grey Wolf Optimization &nbsp;|&nbsp; Random Forest</p></div></div>'
+    '<div class="pills"><span class="pill accent">Existing implementation demo</span><span class="pill">41 input features</span>'
+    '<span class="pill">Wrapper-based feature selection</span><span class="pill">Binary classification: Normal / Attack</span></div></div>',
+    unsafe_allow_html=True)
 
 
 # ============================================================================= PAGE 1
@@ -451,7 +364,7 @@ def page_overview():
     else:
         n_tr_full = count_rows(ROOT / DEFAULT_TRAIN)
         n_train = n_tr_full if n_tr_full is not None else "—"
-        train_sub = "KDDTrain+ records stored in the dataset"
+        train_sub = "full KDDTrain+ (unique rows); run the IDS to record the working sample size"
         n_test = count_rows(ROOT / DEFAULT_TEST)
         n_test = n_test if n_test is not None else "—"
 
@@ -467,8 +380,8 @@ def page_overview():
 
     fmt = lambda v: f"{v:,}" if isinstance(v, (int, np.integer)) else v
     cards([
-        ("Training Records", fmt(n_train), "KDDTrain+ ARFF records", "slate"),
-        ("Test Records", fmt(n_test), "KDDTest+ ARFF records", "slate"),
+        ("Training Samples", fmt(n_train), train_sub, "slate"),
+        ("Test Samples", fmt(n_test), "KDDTest+ (unique rows)", "slate"),
         ("Original Features", total, "NSL-KDD input features", "slate"),
         ("Selected Features", sel, "chosen by Binary GWO", "teal"),
         ("Feature Reduction", red, "relative to all input features", "teal"),
