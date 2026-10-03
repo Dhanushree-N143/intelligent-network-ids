@@ -1,0 +1,4 @@
+seed,selected_features,total_features,feature_reduction_percent,accuracy,precision,recall,f1,runtime_seconds
+1,18,41,56.10,0.8035,0.9701,0.6755,0.7965,8.47
+2,21,41,48.78,0.8040,0.9681,0.6780,0.7975,8.39
+3,22,41,46.34,0.7628,0.9693,0.6024,0.7430,8.34
