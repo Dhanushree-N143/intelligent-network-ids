@@ -227,16 +227,6 @@ def load_json(path: Path):
     return _read_json(str(path), path.stat().st_mtime) if path.exists() else None
 
 
-@st.cache_data(show_spinner=False)
-def _count_unique_rows(path_str, mtime):
-    # Same de-duplication as gwo_ids.prepare(); used only when no run metadata is available.
-    return int(len(gwo_ids.load_arff(path_str).drop_duplicates()))
-
-
-def count_rows(path: Path):
-    return _count_unique_rows(str(path), path.stat().st_mtime) if path.exists() else None
-
-
 def pct(x, d=2):
     return f"{float(x) * 100:.{d}f}%"
 
@@ -396,15 +386,17 @@ def page_overview():
     feats = load_csv(GWO_FEAT)
     meta = load_json(GWO_META)
 
+    # Do not parse the large NSL-KDD ARFF files during dashboard startup.
+    # If run metadata exists, use the recorded values. Otherwise show a
+    # placeholder until an IDS run creates metadata.
     if meta:
-        n_train, train_sub = meta["training_rows"], "working training set used by the run"
-        n_test = meta["test_rows"]
+        n_train = meta.get("training_rows", "—")
+        train_sub = "working training set used by the run"
+        n_test = meta.get("test_rows", "—")
     else:
-        n_tr_full = count_rows(ROOT / DEFAULT_TRAIN)
-        n_train = n_tr_full if n_tr_full is not None else "—"
-        train_sub = "full KDDTrain+ (unique rows); run the IDS to record the working sample size"
-        n_test = count_rows(ROOT / DEFAULT_TEST)
-        n_test = n_test if n_test is not None else "—"
+        n_train = "—"
+        train_sub = "run metadata not available"
+        n_test = "—"
 
     if g is None:
         missing(GWO_RES)
